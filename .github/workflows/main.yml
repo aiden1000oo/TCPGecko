@@ -1,0 +1,42 @@
+name: Build Gecko OS
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: devkitpro/devkitppc:latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          cd Gecko_src
+          echo "DEVKITPRO=$DEVKITPRO"
+          echo "DEVKITPPC=$DEVKITPPC"
+          powerpc-eabi-gcc --version
+
+      - name: Build
+        run: |
+          make clean
+          make
+
+      - name: Show output
+        run: |
+          ls -lh boot.*
+          file boot.elf boot.dol
+
+      - name: Upload Gecko OS
+        uses: actions/upload-artifact@v4
+        with:
+          name: GeckoOS
+          path: |
+            boot.elf
+            boot.dol
