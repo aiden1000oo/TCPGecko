@@ -16,19 +16,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show toolchain
+      - name: Configure devkitPPC
         run: |
-          cd Gecko_src
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITPPC=/opt/devkitpro/devkitPPC
+          export PATH="$DEVKITPPC/bin:$DEVKITPRO/tools/bin:$PATH"
+
           echo "DEVKITPRO=$DEVKITPRO"
           echo "DEVKITPPC=$DEVKITPPC"
+          echo "$PATH"
+
+          ls -la "$DEVKITPPC/bin"
           powerpc-eabi-gcc --version
 
-      - name: Build
+      - name: Build Gecko OS
+        working-directory: Gecko_src
         run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITPPC=/opt/devkitpro/devkitPPC
+          export PATH="$DEVKITPPC/bin:$DEVKITPRO/tools/bin:$PATH"
+
           make clean
           make
 
       - name: Show output
+        working-directory: Gecko_src
         run: |
           ls -lh boot.*
           file boot.elf boot.dol
@@ -38,5 +50,5 @@ jobs:
         with:
           name: GeckoOS
           path: |
-            boot.elf
-            boot.dol
+            Gecko_src/boot.elf
+            Gecko_src/boot.dol
