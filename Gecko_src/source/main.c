@@ -23,6 +23,7 @@
 #include "patchcode.h"
 #include "sysmenu.h"
 #include "main.h"
+#include "tcp_gecko.h"
 
 #define sdbuffer 0x90080000
 
@@ -162,6 +163,7 @@ bool isIOSstub(u8 ios_number)
 	return FALSE;
 }
 
+tcp_gecko_init();
 
 //---------------------------------------------------------------------------------
 int main(int argc, char **argv) {
@@ -415,6 +417,7 @@ slotb:
 		
 		menu_draw();
 		gfx_render_direct();
+		tcp_gecko_poll();
 	}
 
 	return 0;
